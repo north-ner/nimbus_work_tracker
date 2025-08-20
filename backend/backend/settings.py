@@ -7,6 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+GOOGLE_CLIENT_ID = os.getenv('google_Client_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('google_Client_secret')
 SECRET_KEY = SECRET_KEY
 
 DEBUG = True

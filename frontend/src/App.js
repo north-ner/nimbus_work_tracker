@@ -6,7 +6,7 @@ import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import VerifyOtp from './pages/VerifyOtp';
-import ForgotPassword from './components/ForgotPassword'; 
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   return (
@@ -18,16 +18,15 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
-
       </Router>
     </AuthProvider>
   );

@@ -4,26 +4,51 @@ import { jwtDecode } from 'jwt-decode';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem('authTokens') ? 
-    JSON.parse(localStorage.getItem('authTokens')) : null
-  );
-const [user, setUser] = useState(() =>
-    localStorage.getItem('authTokens') ? 
-    jwtDecode(localStorage.getItem('authTokens')) : null
-);
+  const [authTokens, setAuthTokens] = useState(() => {
+    const stored = localStorage.getItem('authTokens');
+    return stored ? JSON.parse(stored) : null;
+  });
 
-const loginUser = (tokens) => {
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('authTokens');
+    if (!stored) return null;
+    try {
+      const parsed = JSON.parse(stored);
+      return jwtDecode(parsed.access);
+    } catch {
+      return null;
+    }
+  });
+
+  const loginUser = (tokens) => {
     setAuthTokens(tokens);
-    setUser(jwtDecode(tokens.access));
+    try {
+      const decoded = jwtDecode(tokens.access);
+      setUser(decoded);
+    } catch {
+      setUser(null);
+    }
     localStorage.setItem('authTokens', JSON.stringify(tokens));
-};
+  };
 
   const logoutUser = () => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem('authTokens');
   };
+
+  // Keep user in sync if tokens change externally
+  useEffect(() => {
+    if (authTokens?.access) {
+      try {
+        setUser(jwtDecode(authTokens.access));
+      } catch {
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
+  }, [authTokens]);
 
   return (
     <AuthContext.Provider value={{ user, authTokens, loginUser, logoutUser }}>

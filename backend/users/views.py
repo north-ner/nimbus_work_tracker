@@ -12,6 +12,7 @@ from google.auth.transport import requests as google_requests
 from rest_framework.permissions import IsAuthenticated
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
+from django.conf import settings
 
 User = get_user_model()
 
@@ -175,13 +176,19 @@ class GoogleLoginAPIView(APIView):
         if not token:
             return Response({'detail': 'ID token required'}, status=400)
         try:
-            idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), "YOUR_GOOGLE_CLIENT_ID")
+            idinfo = id_token.verify_oauth2_token(
+                token, google_requests.Request(), settings.GOOGLE_CLIENT_ID
+            )
             email = idinfo.get('email')
-            username = idinfo.get('sub')  # Google user id or create username based on email
+            # Create or get user; mark active
             user, created = User.objects.get_or_create(
                 email=email,
                 defaults={'username': email.split('@')[0], 'is_active': True}
             )
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
