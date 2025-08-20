@@ -1,11 +1,13 @@
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import os
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-SECRET_KEY = 'django-insecure-vn*(tu39aatvwpdq@idp@&ct+wjszr$69))e+hzjnv==tarc^u'
+SECRET_KEY = SECRET_KEY
 
 DEBUG = True
 
@@ -94,6 +96,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -103,6 +106,8 @@ CACHES = {
         }
     }
 }
+
+RATELIMIT_USE_CACHE = "default"
 # Gmail SMTP configuration for real email sending
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

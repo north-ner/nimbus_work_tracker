@@ -11,13 +11,13 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework.permissions import IsAuthenticated
 from django_ratelimit.decorators import ratelimit
-
+from django.utils.decorators import method_decorator
 
 User = get_user_model()
 
 
 class RegisterUserAPIView(APIView):
-    @ratelimit(key='ip', rate='5/m', method='POST', block=True)
+    @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True))
     def post(self, request):
         username = request.data.get('username')
         email = request.data.get('email')
@@ -42,7 +42,7 @@ class RegisterUserAPIView(APIView):
 
 
 class LoginAPIView(APIView):
-    @ratelimit(key='ip', rate='10/m', method='POST', block=True)
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST', block=True))
     def post(self, request):
         identifier = request.data.get('identifier')
         password = request.data.get('password')
@@ -169,6 +169,7 @@ def get_email_from_username(request):
 
 
 class GoogleLoginAPIView(APIView):
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST', block=True))
     def post(self, request):
         token = request.data.get('id_token')
         if not token:
@@ -194,6 +195,7 @@ class GoogleLoginAPIView(APIView):
 class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST', block=True))
     def post(self, request):
         try:
             refresh_token = request.data.get('refresh')
