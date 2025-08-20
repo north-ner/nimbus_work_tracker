@@ -1,0 +1,9 @@
+# Ignore env folder (virtual environment)
+env/
+.env
+
+# Ignore SQLite database if you want
+backend/db.sqlite3
+
+# Ignore Python cache files
+__pycache__/
