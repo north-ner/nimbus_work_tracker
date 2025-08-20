@@ -1,6 +1,6 @@
 # Ignore env folder (virtual environment)
 env/
-.env
+backend/.env
 
 # Ignore SQLite database if you want
 backend/db.sqlite3
